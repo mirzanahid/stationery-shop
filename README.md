@@ -109,7 +109,8 @@ Method: GET
 /api/products?searchTerm=category
 Method: GET
 ```
-*SearchTerm can be name, brand, category
+
+\*SearchTerm can be name, brand, category
 
 4. **Get specific Product by productId**:
 
@@ -124,12 +125,14 @@ Method: GET
 /api/products/productId
 Method: PUT
 ```
+
 6. **Delete Product**:
 
 ```bash
 /api/products/productId
 Method: DELETE
 ```
+
 # For Order Management:
 
 1. **Create a Order**:
@@ -146,9 +149,7 @@ Method: POST
 Method: GET
 ```
 
-
 ## Necessary Links:
 
 1. **Github Link**: https://github.com/mirzanahid/stationery-shop
 2. **Live Links**: https://stationery-shop-git-main-mirzanahids-projects.vercel.app/
-3. **Video Explanation Links**:  
