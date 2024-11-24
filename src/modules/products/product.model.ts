@@ -47,22 +47,12 @@ const productSchema = new Schema<TProduct>(
     inStock: {
       type: Boolean,
       required: [true, 'inStook is required'],
-      default: true,
     },
   },
   {
     timestamps: true,
   },
 );
-
-productSchema.pre<TProduct>('save', function (next) {
-  if (this.quantity === 0) {
-    this.inStock = false;
-  } else if (this.quantity > 0) {
-    this.inStock = true;
-  }
-  next();
-});
 
 const ProductModel = model<TProduct>('Product', productSchema);
 

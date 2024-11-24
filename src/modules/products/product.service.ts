@@ -16,6 +16,18 @@ const getSingleProductFromDB = async (id: string) => {
   return result;
 };
 
+const getProductsBySearchTermFromDB = async (
+  searchTerm: string,
+): Promise<TProduct[]> => {
+  return ProductModel.find({
+    $or: [
+      { name: { $regex: `^${searchTerm}$`, $options: 'i' } },
+      { brand: { $regex: `^${searchTerm}$`, $options: 'i' } },
+      { category: { $regex: `^${searchTerm}$`, $options: 'i' } },
+    ],
+  });
+};
+
 const updateProductFromDB = async (id: string, data: Partial<TProduct>) => {
   if (data.quantity !== undefined) {
     data.inStock = data.quantity > 0;
@@ -37,6 +49,7 @@ export const ProductServices = {
   createProductIntoDB,
   getProductsFromDB,
   getSingleProductFromDB,
+  getProductsBySearchTermFromDB,
   updateProductFromDB,
   deleteProductFromDB,
 };

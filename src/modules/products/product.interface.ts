@@ -5,8 +5,7 @@ export type TProduct = {
   category:
     | 'Writing'
     | 'Office Supplies'
-    | 'Art'
-    | 'Supplies'
+    | 'Art Supplies'
     | 'Educational'
     | 'Technology';
   description: string;

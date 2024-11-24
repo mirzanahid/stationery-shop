@@ -27,19 +27,42 @@ const createProduct = async (req: Request, res: Response) => {
 
 const getProducts = async (req: Request, res: Response) => {
   try {
-    const result = await ProductServices.getProductsFromDB();
+    const searchTermQuery = req.query.searchTerm as string;
 
-    if (result.length === 0) {
-      res.status(404).json({
-        message: 'Product not found',
-        success: false,
-      });
-    } else {
-      res.send({
-        message: 'Products retrieved successfully',
-        status: true,
-        data: result,
-      });
+    // if searchTerm has
+    if (searchTermQuery) {
+      const searchTerm = searchTermQuery.trim().replace(/\s+/g, ' ');
+
+      const searchResult =
+        await ProductServices.getProductsBySearchTermFromDB(searchTerm);
+      if (searchResult.length === 0) {
+        res.status(404).json({
+          message: 'Products not found',
+          success: false,
+        });
+      } else {
+        res.status(200).json({
+          message: 'Products retrieved successfully',
+          success: true,
+          data: searchResult,
+        });
+      }
+    }
+    // if no searchTerm
+    else {
+      const result = await ProductServices.getProductsFromDB();
+      if (result.length === 0) {
+        res.status(404).json({
+          message: 'Product collection is empty',
+          success: false,
+        });
+      } else {
+        res.send({
+          message: 'Products retrieved successfully',
+          status: true,
+          data: result,
+        });
+      }
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -52,7 +75,6 @@ const getProducts = async (req: Request, res: Response) => {
     }
   }
 };
-
 const getSingleProudct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productId;
