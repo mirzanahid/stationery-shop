@@ -13,7 +13,7 @@ app.use('/api', productRouter);
 app.use('/api', orderRouter);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+  res.send('Welcom to Stationery Shop api service');
 });
 
 export default app;
