@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ProductServices } from './product.service';
+import config from '../../app/config';
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -12,12 +13,15 @@ const createProduct = async (req: Request, res: Response) => {
       message: 'Product is create successfully',
       data: result,
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Something went wrong',
-      err,
-    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong',
+        error,
+        stack: config.node_env ? error.stack : undefined,
+      });
+    }
   }
 };
 
@@ -25,17 +29,27 @@ const getProducts = async (req: Request, res: Response) => {
   try {
     const result = await ProductServices.getProductsFromDB();
 
-    res.send({
-      status: true,
-      message: 'Products retrieved successfully',
-      result,
-    });
+    if (result.length === 0) {
+      res.status(404).json({
+        message: 'Product not found',
+        success: false,
+      });
+    } else {
+      res.send({
+        message: 'Products retrieved successfully',
+        status: true,
+        data: result,
+      });
+    }
   } catch (error) {
-    res.send({
-      status: false,
-      message: 'Something went wrong',
-      error,
-    });
+    if (error instanceof Error) {
+      res.send({
+        message: 'Something went wrong',
+        status: false,
+        error,
+        stack: config.node_env ? error.stack : undefined,
+      });
+    }
   }
 };
 
@@ -43,17 +57,28 @@ const getSingleProudct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productId;
     const result = await ProductServices.getSingleProductFromDB(productId);
-    res.send({
-      status: true,
-      message: 'Product retrieved successfully',
-      result,
-    });
+
+    if (result === null) {
+      res.status(404).json({
+        message: 'Product not found',
+        success: false,
+      });
+    } else {
+      res.send({
+        message: 'Product retrieved successfully',
+        status: true,
+        data: result,
+      });
+    }
   } catch (error) {
-    res.send({
-      status: false,
-      message: 'Something went wrong',
-      error,
-    });
+    if (error instanceof Error) {
+      res.send({
+        message: 'Something went wrong',
+        status: false,
+        error,
+        stack: config.node_env ? error.stack : undefined,
+      });
+    }
   }
 };
 
@@ -65,37 +90,56 @@ const updateProduct = async (req: Request, res: Response) => {
       productId,
       productData,
     );
-
-    res.send({
-      status: true,
-      message: 'Product updated successfully',
-      result,
-    });
+    if (result === null) {
+      res.status(404).json({
+        message: 'Product not found',
+        success: false,
+      });
+    } else {
+      res.send({
+        message: 'Product updated successfully',
+        status: true,
+        result,
+      });
+    }
   } catch (error) {
-    res.send({
-      status: false,
-      message: 'Something went wrong',
-      error,
-    });
+    if (error instanceof Error) {
+      res.send({
+        message: 'Something went wrong',
+        status: false,
+        error,
+        stack: config.node_env ? error.stack : undefined,
+      });
+    }
   }
 };
 
 const deleteProduct = async (req: Request, res: Response) => {
   try {
     const productId = req.params.productId;
-    await ProductServices.deleteProductFromDB(productId);
+    const result = await ProductServices.deleteProductFromDB(productId);
 
-    res.send({
-      status: true,
-      message: 'Product deleted successfully',
-      result: {},
-    });
+    if (result === null) {
+      res.status(404).json({
+        message: 'Product not found',
+        success: false,
+      });
+    } else {
+      res.send({
+        message: 'Product deleted successfully',
+        status: true,
+        data: {},
+      });
+    }
   } catch (error) {
-    res.send({
-      status: false,
-      message: 'Something went wrong',
-      error,
-    });
+    if (error instanceof Error) {
+      res.send({
+        message: 'Something went wrong',
+        status: false,
+        error,
+        stack: config.node_env ? error.stack : undefined,
+      });
+    }
   }
 };
 

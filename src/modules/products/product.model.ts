@@ -1,49 +1,69 @@
-import { model, Schema } from "mongoose";
-import { TProduct } from "./product.interface";
+import { model, Schema } from 'mongoose';
+import { TProduct } from './product.interface';
 
-
-const productSchema = new Schema<TProduct>({
+const productSchema = new Schema<TProduct>(
+  {
     name: {
       type: String,
-      required: [true, "Name is required"]
+      required: [true, 'Name is required'],
+      trim: true,
     },
     brand: {
-     type: String,
-     required: [true, "Brand name is required"]
+      type: String,
+      required: [true, 'Brand name is required'],
+      trim: true,
     },
-    price:{
+    price: {
       type: Number,
-      required: [true, "Price is required"]
+      required: [true, 'Price is required'],
+      min: [0, 'Price must be a positive number'],
     },
     category: {
       type: String,
-      enum:{
-        values: ['Writing' , 'Office Supplies' , 'Art' , 'Supplies' , 'Educational' , 'Technology'],
-        message: "{Value} is not a valid category"
+      enum: {
+        values: [
+          'Writing',
+          'Office Supplies',
+          'Art Supplies',
+          'Educational',
+          'Technology',
+        ],
+        message: '{VALUE} is not a valid category',
       },
-      required: [true, "Category is required"]
+      required: [true, 'Category is required'],
+      trim: true,
     },
-    
+
     description: {
-        type: String,
-        required: [true, "Descripiton is required"]
+      type: String,
+      required: [true, 'Descripiton is required'],
+      trim: true,
     },
     quantity: {
-        type: Number,
-        required: [true, "Quantity is required"]
+      type: Number,
+      required: [true, 'Quantity is required'],
+      min: [0, 'Quantity must be a positive number'],
     },
     inStock: {
-        type: Boolean,
-        required: [true, "inStook is required"]
+      type: Boolean,
+      required: [true, 'inStook is required'],
+      default: true,
     },
-},
-{
-  timestamps: true, 
-}
+  },
+  {
+    timestamps: true,
+  },
+);
 
-)
+productSchema.pre<TProduct>('save', function (next) {
+  if (this.quantity === 0) {
+    this.inStock = false;
+  } else if (this.quantity > 0) {
+    this.inStock = true;
+  }
+  next();
+});
 
+const ProductModel = model<TProduct>('Product', productSchema);
 
- const ProductModel = model<TProduct>('Product', productSchema)
-
- export default ProductModel
+export default ProductModel;

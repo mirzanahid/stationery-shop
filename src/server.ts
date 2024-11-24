@@ -1,7 +1,7 @@
-import config from "./app/config";
-import app from "./app";
+import config from './app/config';
+import app from './app';
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 async function main() {
   try {
@@ -14,6 +14,5 @@ async function main() {
     console.log(err);
   }
 }
-
 
 main();
